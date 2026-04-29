@@ -2,6 +2,10 @@
 
 **Know exactly what you built today, even when you forgot.**
 
+<p align="center">
+  <img src="docs/progress-card.png" alt="Progress Tracker skill card" width="500" />
+</p>
+
 ## What It Does
 
 Progress Tracker auto-discovers every git repo in your workspace, scans Claude Code session logs, checks file modifications, and compiles everything into a structured daily digest. It captures not just commits but also API-driven work, research, analysis, and conversation-driven output that never touches git. You can collect a day's activity, query past days, or generate weekly/monthly newsletters -- all from one command.

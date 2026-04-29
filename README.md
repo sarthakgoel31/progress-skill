@@ -28,9 +28,14 @@ For newsletters, the skill reads all daily digests in a date range and generates
 - **Daily digests:** Structured markdown files with frontmatter, grouped by project, with narrative descriptions beyond raw commit messages
 - **Date queries:** Ask about any specific date or range ("what did I do last Tuesday", "show me last week")
 - **Newsletter generation:** Weekly or monthly reports with highlights, metrics, and trajectory analysis
+- **Backfill support:** Regenerate historical digests with `--since` and `--force` flags via the standalone backfill script
 - **Background monitor:** Includes `progress_monitor.py` -- a universal progress bar renderer for long-running tasks
+- **Noise filtering:** Regex-based patterns skip low-signal messages (IDE tags, one-word confirmations, system reminders)
+- **IST timezone:** All timestamps converted to Indian Standard Time for accurate day boundaries
 
 ## Usage
+
+### Skill (via Claude Code)
 
 ```
 /progress                         # Collect today's activity
@@ -46,20 +51,43 @@ For newsletters, the skill reads all daily digests in a date range and generates
 
 **Trigger phrases:** "what did I do", "show progress", "daily digest", "collect today's progress", "generate newsletter", "weekly summary", "activity report"
 
+### Backfill Script (standalone)
+
+```bash
+# Generate digests for all available history
+python3 scripts/backfill.py
+
+# Backfill from a specific date
+python3 scripts/backfill.py --since 2026-04-01
+
+# Overwrite existing digests
+python3 scripts/backfill.py --force
+```
+
+The backfill script parses Claude Code JSONL session files, collects git commits across all tracked repositories, detects workspace config changes, and generates per-day markdown digests. It uses keyword classification to tag each activity to the correct project, deduplicates and filters noise, and supports the same IST timezone handling as the skill.
+
 ## Project Structure
 
 ```
-SKILL.md               # Skill definition
-progress_monitor.py     # Universal progress bar for background tasks
+SKILL.md               # Skill definition (Claude Code slash command)
+progress_monitor.py    # Universal progress bar for background tasks
+scripts/
+  backfill.py          # Standalone backfill -- parses sessions, collects commits, generates digests
+  cron.log             # Cron execution log
 ```
 
-**Generated output:**
+**Generated output (in workspace):**
 ```
 personal/progress-tracker/
-  daily/                # YYYY-MM-DD.md files (one per day)
-  newsletters/          # Generated newsletter reports
-  scripts/              # Collection utilities
+  daily/               # YYYY-MM-DD.md files (one per day)
+  newsletters/         # Generated newsletter reports
 ```
+
+## Tech Stack
+
+- Python 3
+- Standard library only (json, glob, subprocess, datetime, re, collections)
+- Markdown output format
 
 ---
 

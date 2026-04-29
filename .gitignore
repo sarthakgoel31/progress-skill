@@ -3,3 +3,13 @@ __pycache__/
 *.pyc
 .DS_Store
 node_modules/
+
+# Daily logs (contain sensitive data from Claude sessions)
+daily/
+
+# Newsletters (may contain sensitive data)
+newsletters/
+
+# Environment
+.env
+.env.*
